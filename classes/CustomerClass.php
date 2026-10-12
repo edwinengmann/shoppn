@@ -97,6 +97,81 @@ class CustomerClass extends Database
         return false;
     }
 
+    public function getCustomerById($customerId)
+    {
+        $stmt = $this->conn->prepare(
+            'SELECT
+                customer_id,
+                customer_name,
+                customer_email,
+                customer_country,
+                customer_city,
+                customer_contact,
+                customer_address,
+                customer_image,
+                user_role
+             FROM customer
+             WHERE customer_id = ?
+             LIMIT 1'
+        );
+        $stmt->bind_param('i', $customerId);
+        $stmt->execute();
+        $customer = $stmt->get_result()->fetch_assoc();
+        $stmt->close();
+
+        return $customer ?: false;
+    }
+
+    public function updateCustomerProfile(
+        $customerId,
+        $country,
+        $city,
+        $contact,
+        $address,
+        $imagePath
+    ) {
+        $stmt = $this->conn->prepare(
+            'UPDATE customer
+             SET customer_country = ?,
+                 customer_city = ?,
+                 customer_contact = ?,
+                 customer_address = ?,
+                 customer_image = ?
+             WHERE customer_id = ?'
+        );
+        $stmt->bind_param(
+            'sssssi',
+            $country,
+            $city,
+            $contact,
+            $address,
+            $imagePath,
+            $customerId
+        );
+        $success = $stmt->execute();
+        $stmt->close();
+
+        return $success;
+    }
+
+    public function getAllCustomers()
+    {
+        $result = $this->conn->query(
+            'SELECT
+                customer_id,
+                customer_name,
+                customer_email,
+                customer_country,
+                customer_city,
+                customer_contact,
+                user_role
+             FROM customer
+             ORDER BY customer_id DESC'
+        );
+
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
 
     
     public function login($email, $pass)

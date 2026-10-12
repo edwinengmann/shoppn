@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function () {
             /^[0-9+\-\s]{7,15}$/;
 
         const passwordRegex =
-            /^(?=.*\d).{8,}$/;
+            /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{8,}$/;
 
 
         // Clear old errors
@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             showError(
                 "password-error",
-                "Password must be at least 8 characters and contain a number."
+                "Password must be at least 8 characters and contain an uppercase letter, a lowercase letter, a number, and a special character."
             );
 
             valid = false;

@@ -49,6 +49,35 @@ class CustomerController
         ];
     }
 
+    public function getAllCustomers()
+    {
+        return $this->customerModel->getAllCustomers();
+    }
+
+    public function getCustomerById($customerId)
+    {
+        return $this->customerModel->getCustomerById($customerId);
+    }
+
+    public function updateCustomerProfile($customerId, $data)
+    {
+        $success = $this->customerModel->updateCustomerProfile(
+            $customerId,
+            $data['country'],
+            $data['city'],
+            $data['contact'],
+            $data['address'],
+            $data['image']
+        );
+
+        return $success
+            ? ['success' => true]
+            : [
+                'success' => false,
+                'error' => 'Your account details could not be saved. Please try again.'
+            ];
+    }
+
 
     
     public function login($email, $pass)

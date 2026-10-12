@@ -2,6 +2,9 @@
 
 require_once __DIR__ . '/../core/core.php';
 
+$old = $_SESSION['_old_register'] ?? [];
+unset($_SESSION['_old_register']);
+
 ?>
 
 <!DOCTYPE html>
@@ -40,7 +43,7 @@ require_once __DIR__ . '/../core/core.php';
 
         <div class="error-message">
 
-            <?= $_SESSION['error']; ?>
+            <?= nl2br(htmlspecialchars($_SESSION['error'], ENT_QUOTES, 'UTF-8')); ?>
 
             <?php unset($_SESSION['error']); ?>
 
@@ -70,6 +73,7 @@ require_once __DIR__ . '/../core/core.php';
                 id="customer_name"
                 name="customer_name"
                 maxlength="100"
+                value="<?= htmlspecialchars($old['name'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"
                 required
             >
 
@@ -94,6 +98,7 @@ require_once __DIR__ . '/../core/core.php';
                 id="customer_email"
                 name="customer_email"
                 maxlength="100"
+                value="<?= htmlspecialchars($old['email'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"
                 required
             >
 
@@ -147,27 +152,27 @@ require_once __DIR__ . '/../core/core.php';
                     -- Select Country --
                 </option>
 
-                <option value="Ghana">
+                <option value="Ghana" <?= ($old['country'] ?? '') === 'Ghana' ? 'selected' : ''; ?>>
                     Ghana
                 </option>
 
-                <option value="Nigeria">
+                <option value="Nigeria" <?= ($old['country'] ?? '') === 'Nigeria' ? 'selected' : ''; ?>>
                     Nigeria
                 </option>
 
-                <option value="Kenya">
+                <option value="Kenya" <?= ($old['country'] ?? '') === 'Kenya' ? 'selected' : ''; ?>>
                     Kenya
                 </option>
 
-                <option value="South Africa">
+                <option value="South Africa" <?= ($old['country'] ?? '') === 'South Africa' ? 'selected' : ''; ?>>
                     South Africa
                 </option>
 
-                <option value="United Kingdom">
+                <option value="United Kingdom" <?= ($old['country'] ?? '') === 'United Kingdom' ? 'selected' : ''; ?>>
                     United Kingdom
                 </option>
 
-                <option value="United States">
+                <option value="United States" <?= ($old['country'] ?? '') === 'United States' ? 'selected' : ''; ?>>
                     United States
                 </option>
 
@@ -194,6 +199,7 @@ require_once __DIR__ . '/../core/core.php';
                 id="customer_city"
                 name="customer_city"
                 maxlength="100"
+                value="<?= htmlspecialchars($old['city'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"
                 required
             >
 
@@ -218,6 +224,7 @@ require_once __DIR__ . '/../core/core.php';
                 id="customer_contact"
                 name="customer_contact"
                 maxlength="15"
+                value="<?= htmlspecialchars($old['contact'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"
                 required
             >
 

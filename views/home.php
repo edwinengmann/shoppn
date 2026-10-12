@@ -2,29 +2,74 @@
 
 require_once __DIR__ . '/../core/core.php';
 
-if (!is_logged_in()) {
-    $_SESSION['error'] = 'Please log in to continue.';
-    redirect(app_url('views/login.php'));
-}
+require_login();
 
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to Shoppn</title>
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Shoppn</title>
+
+    <link
+        rel="stylesheet"
+        href="<?= htmlspecialchars(
+            app_url('css/style.css')
+                . '?v='
+                . filemtime(__DIR__ . '/../css/style.css'),
+            ENT_QUOTES,
+            'UTF-8'
+        ); ?>"
+    >
+
 </head>
-<body>
+
+
+<body class="home-page">
+
+
     <?php require_once __DIR__ . '/layout/header.php'; ?>
 
-    <main>
-        <h1>Welcome to Shoppn</h1>
-        <p>Hello, <?= htmlspecialchars($_SESSION['customer_name'] ?? 'Customer'); ?>! Your account is ready.</p>
-        <p>You must log in before accessing this page.</p>
+
+    <main class="home-hero">
+
+        <div class="home-hero-content">
+
+            <p class="home-welcome">
+                WELCOME TO
+            </p>
+
+            <h1>
+                SHOPPN
+            </h1>
+
+            <a
+                href="<?= htmlspecialchars(
+                    app_url('views/all_products.php'),
+                    ENT_QUOTES,
+                    'UTF-8'
+                ); ?>"
+                class="shop-now-button"
+            >
+                SHOP NOW
+            </a>
+
+        </div>
+
     </main>
 
     <?php require_once __DIR__ . '/layout/footer.php'; ?>
+
+
 </body>
+
 </html>

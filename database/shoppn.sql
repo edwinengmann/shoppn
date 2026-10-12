@@ -19,7 +19,10 @@ DROP TABLE IF EXISTS `customer`;
 CREATE TABLE `brands` (
   `brand_id` int(11) NOT NULL AUTO_INCREMENT,
   `brand_name` varchar(100) NOT NULL,
-  PRIMARY KEY (`brand_id`)
+  `brand_cat` int(11) DEFAULT NULL,
+  `brand_image` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`brand_id`),
+  KEY `brand_cat` (`brand_cat`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `categories` (
@@ -27,6 +30,10 @@ CREATE TABLE `categories` (
   `cat_name` varchar(100) NOT NULL,
   PRIMARY KEY (`cat_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+ALTER TABLE `brands`
+  ADD CONSTRAINT `brands_ibfk_1`
+  FOREIGN KEY (`brand_cat`) REFERENCES `categories` (`cat_id`);
 
 CREATE TABLE `customer` (
   `customer_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -36,6 +43,7 @@ CREATE TABLE `customer` (
   `customer_country` varchar(30) NOT NULL,
   `customer_city` varchar(30) NOT NULL,
   `customer_contact` varchar(15) NOT NULL,
+  `customer_address` varchar(255) NOT NULL DEFAULT '',
   `customer_image` varchar(100) DEFAULT NULL,
   `user_role` int(11) NOT NULL DEFAULT 2,
   PRIMARY KEY (`customer_id`),

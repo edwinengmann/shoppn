@@ -1,10 +1,10 @@
-﻿<?php
+<?php
 
 require_once __DIR__ . '/../core/core.php';
 require_once __DIR__ . '/../controllers/CustomerController.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    redirect('../views/register.php');
+    redirect(app_url('views/register.php'));
 }
 
 $name = strip_tags(trim($_POST['customer_name'] ?? ''));
@@ -13,6 +13,13 @@ $pass = $_POST['customer_pass'] ?? '';
 $country = strip_tags(trim($_POST['customer_country'] ?? ''));
 $city = strip_tags(trim($_POST['customer_city'] ?? ''));
 $contact = strip_tags(trim($_POST['customer_contact'] ?? ''));
+$_SESSION['_old_register'] = [
+    'name' => $name,
+    'email' => $email,
+    'country' => $country,
+    'city' => $city,
+    'contact' => $contact
+];
 
 $errors = [];
 
@@ -28,6 +35,22 @@ if (strlen($pass) < 8) {
     $errors[] = 'Password must be at least 8 characters.';
 }
 
+if (!preg_match('/[A-Z]/', $pass)) {
+    $errors[] = 'Password must contain at least one uppercase letter.';
+}
+
+if (!preg_match('/[a-z]/', $pass)) {
+    $errors[] = 'Password must contain at least one lowercase letter.';
+}
+
+if (!preg_match('/[0-9]/', $pass)) {
+    $errors[] = 'Password must contain at least one number.';
+}
+
+if (!preg_match('/[\W_]/', $pass)) {
+    $errors[] = 'Password must contain at least one special character.';
+}
+
 if (strlen($country) < 2 || strlen($country) > 100) {
     $errors[] = 'Please select a country.';
 }
@@ -41,8 +64,8 @@ if (!preg_match('/^[0-9+\-\s]{7,15}$/', $contact)) {
 }
 
 if (!empty($errors)) {
-    $_SESSION['error'] = implode('<br>', $errors);
-    redirect('../views/register.php');
+    $_SESSION['error'] = implode("\n", $errors);
+    redirect(app_url('views/register.php'));
 }
 
 $controller = new CustomerController();
@@ -56,11 +79,10 @@ $result = $controller->register([
 ]);
 
 if ($result['success']) {
+    unset($_SESSION['_old_register']);
     $_SESSION['success'] = 'Registration successful. Please login to continue.';
-    redirect('../views/login.php');
+    redirect(app_url('views/login.php'));
 }
 
 $_SESSION['error'] = $result['error'];
-redirect('../views/register.php');
-
-?>
+redirect(app_url('views/register.php'));

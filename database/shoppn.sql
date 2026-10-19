@@ -67,12 +67,16 @@ CREATE TABLE `products` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `cart` (
+  `cart_id` int(11) NOT NULL AUTO_INCREMENT,
   `p_id` int(11) NOT NULL,
   `ip_add` varchar(50) NOT NULL,
   `c_id` int(11) DEFAULT NULL,
   `qty` int(11) NOT NULL DEFAULT 1,
+  `size` varchar(20) NOT NULL DEFAULT '',
+  PRIMARY KEY (`cart_id`),
   KEY `p_id` (`p_id`),
   KEY `c_id` (`c_id`),
+  UNIQUE KEY `cart_customer_product_size` (`c_id`, `p_id`, `size`),
   CONSTRAINT `cart_ibfk_1` FOREIGN KEY (`p_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `cart_ibfk_2` FOREIGN KEY (`c_id`) REFERENCES `customer` (`customer_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;

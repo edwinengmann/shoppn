@@ -5,6 +5,7 @@ require_once __DIR__ . '/../core/core.php';
 require_login();
 
 require_once __DIR__ . '/../controllers/ProductController.php';
+require_once __DIR__ . '/../classes/CartClass.php';
 
 $rawId = $_GET['id'] ?? null;
 $productId = is_string($rawId)
@@ -18,11 +19,15 @@ $productId = is_string($rawId)
 if ($productId === false) {
     http_response_code(404);
     $product = false;
+    $sizeOptions = [];
 } else {
     $controller = new ProductController();
     $product = $controller->getProductById($productId);
     if (!$product) {
         http_response_code(404);
+        $sizeOptions = [];
+    } else {
+        $sizeOptions = CartClass::getSizeOptions($product);
     }
 }
 
@@ -120,6 +125,61 @@ function product_detail_escape($value)
                             <?= nl2br(product_detail_escape($product['product_desc'])); ?>
                         </p>
                     <?php endif; ?>
+                    <?php if (!empty($_SESSION['error'])): ?>
+                        <p class="cart-message cart-message-error" role="alert">
+                            <?= product_detail_escape($_SESSION['error']); ?>
+                        </p>
+                        <?php unset($_SESSION['error']); ?>
+                    <?php endif; ?>
+                    <form
+                        class="cart-add-form"
+                        method="post"
+                        action="<?= product_detail_escape(
+                            app_url('actions/add_to_cart_action.php')
+                        ); ?>"
+                    >
+                        <input
+                            type="hidden"
+                            name="product_id"
+                            value="<?= (int) $product['product_id']; ?>"
+                        >
+                        <?php if ($sizeOptions): ?>
+                            <div class="cart-add-field">
+                                <label for="product-size">
+                                    <?= in_array(
+                                        $sizeOptions[0],
+                                        CartClass::FOOTWEAR_SIZES,
+                                        true
+                                    )
+                                        ? 'Footwear size (EU)'
+                                        : 'Clothing size'; ?>
+                                </label>
+                                <select id="product-size" name="size" required>
+                                    <option value="">Choose a size</option>
+                                    <?php foreach ($sizeOptions as $size): ?>
+                                        <option value="<?= product_detail_escape($size); ?>">
+                                            <?= product_detail_escape($size); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        <?php else: ?>
+                            <input type="hidden" name="size" value="">
+                        <?php endif; ?>
+                        <div class="cart-add-field">
+                            <label for="product-quantity">Quantity</label>
+                            <input
+                                id="product-quantity"
+                                type="number"
+                                name="qty"
+                                min="1"
+                                max="<?= CartClass::MAX_QUANTITY; ?>"
+                                value="1"
+                                required
+                            >
+                        </div>
+                        <button type="submit">Add to cart</button>
+                    </form>
                     <a class="catalog-back-link" href="<?= product_detail_escape(
                         app_url(
                             'views/all_products.php?category='

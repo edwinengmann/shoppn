@@ -1,2 +1,5 @@
 core/db_cred.php
 *.log
+.env
+.env.*
+!.env.example

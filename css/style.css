@@ -2215,6 +2215,66 @@ body.home-page {
     line-height: 1.8;
 }
 
+.checkout-payment-channels {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 24px 0 0;
+    padding: 18px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #fafafa;
+}
+
+.checkout-payment-channels legend {
+    padding: 0 7px;
+    color: var(--text-dark);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.checkout-payment-help {
+    flex-basis: 100%;
+    margin: 0 0 4px;
+    color: var(--text-grey);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.checkout-payment-channels label {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 13px;
+    border: 1px solid #e1e3e5;
+    border-radius: 7px;
+    background: #ffffff;
+    color: var(--text-dark);
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1.3;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.checkout-payment-channels label:hover {
+    border-color: #a7a7a7;
+}
+
+.checkout-payment-channels label:focus-within {
+    outline: 2px solid var(--text-dark);
+    outline-offset: 2px;
+}
+
+.checkout-payment-channels input[type="checkbox"] {
+    width: 17px;
+    height: 17px;
+    flex: 0 0 auto;
+    margin: 0;
+    accent-color: var(--text-dark);
+    cursor: pointer;
+}
+
 .checkout-panel .cart-primary-button {
     width: 100%;
     margin-top: 22px;
@@ -2306,6 +2366,16 @@ body.home-page {
     .checkout-review {
         grid-template-columns: 1fr;
         gap: 24px;
+    }
+
+    .checkout-payment-channels {
+        gap: 8px;
+        padding: 16px;
+    }
+
+    .checkout-payment-channels label {
+        flex: 1 1 calc(50% - 8px);
+        justify-content: flex-start;
     }
 
     .cart-item {
@@ -2939,6 +3009,11 @@ body.auth-page {
     overflow-y: auto;
 }
 
+body.register-page {
+    grid-template-rows: auto;
+    height: auto;
+}
+
 .auth-page .site-header {
     display: none;
 }
@@ -2952,6 +3027,12 @@ body.auth-page {
     max-width: 760px;
     margin: 0;
     padding: clamp(28px, 5vh, 60px) clamp(24px, 4vw, 50px);
+}
+
+.register-page .container {
+    align-self: start;
+    margin-top: clamp(24px, 5vh, 60px);
+    margin-bottom: clamp(24px, 5vh, 60px);
 }
 
 @media (max-width: 900px) {
@@ -2969,6 +3050,10 @@ body.auth-page {
         max-width: 600px;
         margin: 0 auto;
         padding: 32px 24px;
+    }
+
+    .register-page .container {
+        margin: 24px auto;
     }
 }
 

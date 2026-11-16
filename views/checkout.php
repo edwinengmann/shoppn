@@ -5,6 +5,7 @@ require_once __DIR__ . '/../core/core.php';
 require_login();
 
 require_once __DIR__ . '/../controllers/CartController.php';
+require_once __DIR__ . '/../core/paystack.php';
 require_once __DIR__ . '/../controllers/CustomerController.php';
 
 $customerId = (int) $_SESSION['customer_id'];
@@ -27,6 +28,20 @@ $subtotal = 0;
 foreach ($items as $item) {
     $subtotal += (float) $item['product_price'] * (int) $item['qty'];
 }
+
+$paymentChannels = [
+    'card' => 'Cards',
+    'mobile_money' => 'Mobile money',
+    'bank' => 'Bank',
+    'bank_transfer' => 'Bank transfer',
+    'ussd' => 'USSD',
+    'qr' => 'QR code'
+];
+if (empty($_SESSION['checkout_csrf_token'])) {
+    $_SESSION['checkout_csrf_token'] = bin2hex(random_bytes(32));
+}
+$errorMessage = $_SESSION['error'] ?? '';
+unset($_SESSION['error']);
 
 function checkout_escape($value)
 {
@@ -53,6 +68,11 @@ function checkout_escape($value)
     <?php require __DIR__ . '/layout/header.php'; ?>
 
     <main class="catalog-content cart-checkout-content">
+        <?php if ($errorMessage !== ''): ?>
+            <p class="cart-message cart-message-error" role="alert">
+                <?= checkout_escape($errorMessage); ?>
+            </p>
+        <?php endif; ?>
         <header class="cart-heading">
             <p class="catalog-eyebrow">ALMOST YOURS</p>
             <h1>Checkout</h1>
@@ -109,16 +129,49 @@ function checkout_escape($value)
                 >
                     Edit account details
                 </a>
-                <p class="checkout-note">
-                    Online payment is not configured yet. Your bag is saved while
-                    you review your details.
-                </p>
-                <a
-                    class="cart-primary-button"
-                    href="<?= checkout_escape(app_url('views/cart.php')); ?>"
-                >
-                    Return to your bag
-                </a>
+                <?php if (!paystack_is_configured()): ?>
+                    <p class="checkout-note" role="status">
+                        Online payments are temporarily unavailable. Please try
+                        again later or contact the store.
+                    </p>
+                <?php else: ?>
+                    <form
+                        method="post"
+                        action="<?= checkout_escape(
+                            app_url('actions/process_payment_action.php')
+                        ); ?>"
+                    >
+                        <input
+                            type="hidden"
+                            name="csrf_token"
+                            value="<?= checkout_escape($_SESSION['checkout_csrf_token']); ?>"
+                        >
+                        <fieldset class="checkout-payment-channels">
+                            <legend>Payment methods</legend>
+                            <p class="checkout-payment-help">
+                                Paystack will show the selected options on the next secure checkout screen.
+                            </p>
+                            <?php foreach ($paymentChannels as $channel => $label): ?>
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        name="channels[]"
+                                        value="<?= checkout_escape($channel); ?>"
+                                        checked
+                                    >
+                                    <?= checkout_escape($label); ?>
+                                </label>
+                            <?php endforeach; ?>
+                        </fieldset>
+                        <p class="checkout-note">
+                            Payment is securely completed on Paystack. Only
+                            confirmed payments will mark an order as paid.
+                        </p>
+                        <button class="cart-primary-button" type="submit">
+                            Pay ₵<?= checkout_escape(number_format($subtotal, 2)); ?> with Paystack
+                        </button>
+                    </form>
+                <?php endif; ?>
             </section>
         </div>
     </main>

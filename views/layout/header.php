@@ -32,6 +32,7 @@ if (session_status() === PHP_SESSION_NONE) {
         ); ?>">Shop</a>
 
         <?php if (is_admin()): ?>
+            <a href="<?= htmlspecialchars(app_url('views/admin/orders.php'), ENT_QUOTES, 'UTF-8'); ?>">Orders &amp; Payments</a>
             <a href="<?= htmlspecialchars(app_url('views/admin/customers.php'), ENT_QUOTES, 'UTF-8'); ?>">Customers</a>
             <a href="<?= htmlspecialchars(app_url('views/admin/brand.php'), ENT_QUOTES, 'UTF-8'); ?>">Brands</a>
             <a href="<?= htmlspecialchars(app_url('views/admin/category.php'), ENT_QUOTES, 'UTF-8'); ?>">Categories</a>
